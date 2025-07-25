@@ -1,9 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import "./Map.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
-
-// Import city images
 import SanFrancisco from "../assets/SanFrancisco.jpg";
 import Delhi from "../assets/Delhi.jpg";
 import Mauritious from "../assets/Mauritious.jpg";
@@ -21,7 +19,7 @@ function Map() {
     city: "Mumbai",
   });
 
-  // City cards data
+
   const cities = [
     {
       id: 1,
@@ -61,34 +59,30 @@ function Map() {
     },
   ];
 
-  // Get user's current location
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { longitude, latitude } = position.coords;
 
-          // Try to get city name from coordinates (fallback to generic location)
           let cityName = "Your Location";
           try {
-            // Using a free reverse geocoding service
             const response = await fetch(
               `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
             );
             const data = await response.json();
             cityName =
               data.city || data.locality || data.countryName || "Your Location";
-          } catch (error) {
+          } catch (_error) {
             console.log("Could not fetch city name");
           }
 
           setUserLocation({ lat: latitude, lng: longitude, city: cityName });
         },
-        (error) => {
+        (_error) => {
           console.log(
             "Geolocation not available, using default location (Mumbai)"
           );
-          // Keep default location (Mumbai) if geolocation fails
         }
       );
     } else {

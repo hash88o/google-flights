@@ -10,9 +10,7 @@ import {
   faChevronRight,
   faLocationDot,
 } from "@fortawesome/free-solid-svg-icons";
-import { flightAPI } from "../services/FlightAPI";
 import type {
-  FlightSearchParams,
   FlightSearchResponse,
 } from "../services/FlightAPI";
 import { useNavigate } from "react-router-dom";
@@ -21,7 +19,7 @@ interface FormProps {
   onSearchResults?: (results: FlightSearchResponse, loading: boolean) => void;
 }
 
-function Form({ onSearchResults }: FormProps) {
+function Form({ }: FormProps) {
   const [tripType, setTripType] = useState("roundtrip");
   const [fromLocation, setFromLocation] = useState("Mumbai");
   const [toLocation, setToLocation] = useState("");
@@ -29,20 +27,20 @@ function Form({ onSearchResults }: FormProps) {
   const [returnDate, setReturnDate] = useState("");
   const [cabinClass, setCabinClass] = useState("Economy");
 
-  // Passenger state (main state)
+  
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
   const [infantsInSeat, setInfantsInSeat] = useState(0);
   const [infantsOnLap, setInfantsOnLap] = useState(0);
   const [showPassengerDropdown, setShowPassengerDropdown] = useState(false);
 
-  // Temporary passenger state for dropdown (only updated on Done)
+  
   const [tempAdults, setTempAdults] = useState(1);
   const [tempChildren, setTempChildren] = useState(0);
   const [tempInfantsInSeat, setTempInfantsInSeat] = useState(0);
   const [tempInfantsOnLap, setTempInfantsOnLap] = useState(0);
 
-  // Calendar state
+  
   const [showCalendar, setShowCalendar] = useState(false);
   const [tempDepartDate, setTempDepartDate] = useState("");
   const [tempReturnDate, setTempReturnDate] = useState("");
@@ -62,80 +60,7 @@ function Form({ onSearchResults }: FormProps) {
     setToLocation(temp);
   };
 
-  const handleFlightSearch = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-
-    // Validate required fields
-    if (!fromLocation.trim()) {
-      alert("Please enter a departure location");
-      return;
-    }
-    if (!toLocation.trim()) {
-      alert("Please enter a destination");
-      return;
-    }
-    if (!departDate) {
-      alert("Please select a departure date");
-      return;
-    }
-    if (tripType === "roundtrip" && !returnDate) {
-      alert("Please select a return date for round trip");
-      return;
-    }
-
-    // Prepare search parameters
-    const searchParams: FlightSearchParams = {
-      origin: fromLocation.trim(),
-      destination: toLocation.trim(),
-      departureDate: departDate,
-      returnDate: tripType === "roundtrip" ? returnDate : undefined,
-      adults: adults,
-      children: children,
-      infants: infantsOnLap,
-      infantsInSeat: infantsInSeat,
-      cabinClass: cabinClass.toLowerCase(),
-      tripType: tripType,
-    };
-
-    // Show loading state
-    if (onSearchResults) {
-      onSearchResults(
-        {
-          success: true,
-          data: {
-            outbound: [],
-            searchId: "",
-            currency: "USD",
-            totalResults: 0,
-          },
-        },
-        true
-      );
-    }
-
-    try {
-      console.log("Searching flights with params:", searchParams);
-      const response = await flightAPI.searchFlights(searchParams);
-
-      if (onSearchResults) {
-        onSearchResults(response, false);
-      }
-
-      // Show rate limit status
-      const rateLimitStatus = flightAPI.getRateLimitStatus();
-      console.log("Rate limit status:", rateLimitStatus);
-    } catch (error) {
-      console.error("Flight search error:", error);
-      const errorResponse: FlightSearchResponse = {
-        success: false,
-        error: "Failed to search flights. Please try again.",
-      };
-
-      if (onSearchResults) {
-        onSearchResults(errorResponse, false);
-      }
-    }
-  };
+ 
 
   const updateTempPassengerCount = (type: string, operation: string) => {
     switch (type) {
@@ -190,11 +115,10 @@ function Form({ onSearchResults }: FormProps) {
     setShowPassengerDropdown(false);
   };
 
-  // Calendar functions
+  
   const handleCalendarOpen = () => {
     setTempDepartDate(departDate);
     setTempReturnDate(returnDate);
-    // Reset to current month when opening calendar
     const today = new Date();
     setCurrentMonth(new Date(today.getFullYear(), today.getMonth(), 1));
     setShowCalendar(true);
@@ -217,7 +141,7 @@ function Form({ onSearchResults }: FormProps) {
 
   const formatDate = (dateStr: string) => {
     if (!dateStr) return "";
-    // Parse as local date to avoid timezone issues
+
     const [year, month, day] = dateStr.split("-");
     const date = new Date(Number(year), Number(month) - 1, Number(day));
     return date.toLocaleDateString("en-US", {
@@ -254,12 +178,10 @@ function Form({ onSearchResults }: FormProps) {
   };
 
   const handleDateClick = (date: Date) => {
-    // Don't allow selection of past dates
     if (isPastDate(date)) {
       return;
     }
 
-    // Use timezone-safe date formatting
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
@@ -289,7 +211,6 @@ function Form({ onSearchResults }: FormProps) {
     const currentYear = currentMonth.getFullYear();
     const currentMonthIndex = currentMonth.getMonth();
 
-    // Don't allow navigation to months before current month
     if (
       currentYear > today.getFullYear() ||
       (currentYear === today.getFullYear() &&
@@ -327,7 +248,6 @@ function Form({ onSearchResults }: FormProps) {
         <div className="calendar-days">
           {days.map((day, index) => {
             const isCurrentMonth = day.getMonth() === month.getMonth();
-            // Use timezone-safe date formatting
             const year = day.getFullYear();
             const monthNum = String(day.getMonth() + 1).padStart(2, "0");
             const dayNum = String(day.getDate()).padStart(2, "0");
@@ -343,7 +263,6 @@ function Form({ onSearchResults }: FormProps) {
             const isPast = isPastDate(day);
             const isDisabled = !isCurrentMonth || isPast;
 
-            // Get today's date in same format
             const today = new Date();
             const todayYear = today.getFullYear();
             const todayMonthNum = String(today.getMonth() + 1).padStart(2, "0");
@@ -373,7 +292,6 @@ function Form({ onSearchResults }: FormProps) {
     );
   };
 
-  // Helper to increment/decrement a date string (YYYY-MM-DD) by n days
   const addDays = (dateStr: string, n: number) => {
     if (!dateStr) return "";
     const [year, month, day] = dateStr.split("-");
@@ -385,7 +303,7 @@ function Form({ onSearchResults }: FormProps) {
     return `${yyyy}-${mm}-${dd}`;
   };
 
-  // Helper to check if a date string is today or in the future
+  
   const isTodayOrFuture = (dateStr: string) => {
     if (!dateStr) return false;
     const [year, month, day] = dateStr.split("-");

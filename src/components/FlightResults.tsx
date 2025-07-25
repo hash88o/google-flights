@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlane,
   faClock,
-  faExchangeAlt,
   faLeaf,
   faExternalLinkAlt,
   faSort,
@@ -38,7 +37,7 @@ function FlightResults({
     if (searchResponse?.data?.outbound) {
       let flights = [...searchResponse.data.outbound];
 
-      // Apply filters
+  
       if (filterStops !== "all") {
         flights = flights.filter((flight) => {
           switch (filterStops) {
@@ -54,7 +53,6 @@ function FlightResults({
         });
       }
 
-      // Apply sorting
       flights.sort((a, b) => {
         switch (sortBy) {
           case "price":
@@ -101,7 +99,6 @@ function FlightResults({
     if (flight.bookingUrl) {
       window.open(flight.bookingUrl, "_blank");
     } else {
-      // Fallback to a search on a booking site
       const searchUrl = `https://www.kayak.com/flights/${flight.departure.airport}-${flight.arrival.airport}/${flight.departure.date}`;
       window.open(searchUrl, "_blank");
     }

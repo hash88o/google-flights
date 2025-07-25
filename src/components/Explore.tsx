@@ -3,13 +3,7 @@ import "./Explore.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUser,
-  faCalendarWeek,
-  faMagnifyingGlass,
   faChevronDown,
-  faLocationDot,
-  faExchangeAlt,
-  faPlane,
-  faFilter,
   faTimes,
   faMap,
 } from "@fortawesome/free-solid-svg-icons";
@@ -17,24 +11,19 @@ import { flightAPI } from "../services/FlightAPI";
 import type {
   FlightSearchParams,
   FlightSearchResponse,
-  FlightResult,
 } from "../services/FlightAPI";
 import { useLocation, useNavigate } from "react-router-dom";
 
-console.log("Explore.tsx: Imports loaded successfully");
 
-// Declare mapboxgl for TypeScript
+
+
 declare global {
   interface Window {
     mapboxgl: any;
   }
 }
 
-interface ExploreProps {
-  onBackToHome?: () => void;
-}
-
-function Explore({ onBackToHome }: ExploreProps) {
+function Explore() {
   const location = useLocation();
   const navigate = useNavigate();
   const {
@@ -46,9 +35,7 @@ function Explore({ onBackToHome }: ExploreProps) {
     cabinClass: initialCabin,
     tripType: initialTripType,
     adults: initialAdults,
-    children: initialChildren,
-    infantsInSeat: initialInfantsInSeat,
-    infantsOnLap: initialInfantsOnLap,
+
   } = location.state || {};
 
   const [tripType, setTripType] = useState(initialTripType || "roundtrip");
@@ -75,11 +62,10 @@ function Explore({ onBackToHome }: ExploreProps) {
   );
   const [cabinClass, setCabinClass] = useState(initialCabin || "Economy");
 
-  // Flight search results
+  
   const [searchResults, setSearchResults] =
     useState<FlightSearchResponse | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [showFilters, setShowFilters] = useState(false);
+
   const [showMobileMap, setShowMobileMap] = useState(false);
 
   const mapContainer = useRef<HTMLDivElement>(null);
@@ -93,14 +79,13 @@ function Explore({ onBackToHome }: ExploreProps) {
   const [tempDepartDate, setTempDepartDate] = useState(departDate);
   const [tempReturnDate, setTempReturnDate] = useState(returnDate);
 
-  // Passenger dropdown state (mirroring Form.tsx)
   const [showPassengerDropdown, setShowPassengerDropdown] = useState(false);
   const [tempAdults, setTempAdults] = useState(passengers);
   const [tempChildren, setTempChildren] = useState(0);
   const [tempInfantsInSeat, setTempInfantsInSeat] = useState(0);
   const [tempInfantsOnLap, setTempInfantsOnLap] = useState(0);
 
-  // Dynamic destinations based on search results
+
   const [destinations, setDestinations] = useState([
     { name: "Reykjavik", price: "$689", lat: 64.1466, lng: -21.9426 },
     { name: "Stockholm", price: "$459", lat: 59.3293, lng: 18.0686 },
@@ -120,19 +105,19 @@ function Explore({ onBackToHome }: ExploreProps) {
 
   const filterBarRef = useRef<HTMLDivElement>(null);
 
-  // Track if all fields are filled
+
   const allFieldsFilled = fromLocation && toLocation && departDate;
 
-  // Auto-search when inputs change with debounce
+
   useEffect(() => {
     if (allFieldsFilled) {
       const timeoutId = setTimeout(() => {
         handleSearch();
-      }, 1000); // 1 second debounce
+      }, 1000); 
 
       return () => clearTimeout(timeoutId);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
   }, [
     fromLocation,
     toLocation,
@@ -143,7 +128,7 @@ function Explore({ onBackToHome }: ExploreProps) {
     cabinClass,
   ]);
 
-  // Helper function to format date for display
+
   const formatDisplayDate = (dateStr: string) => {
     if (!dateStr) return "";
     const [year, month, day] = dateStr.split("-");
@@ -155,7 +140,7 @@ function Explore({ onBackToHome }: ExploreProps) {
     });
   };
 
-  // Get coordinates for a location name
+
   const getLocationCoordinates = (locationName: string) => {
     if (!locationName || typeof locationName !== "string") {
       console.warn("Invalid location name provided:", locationName);
@@ -200,7 +185,7 @@ function Explore({ onBackToHome }: ExploreProps) {
     }
   };
 
-  // Update map view to show relevant markers
+
   const updateMapView = () => {
     if (!map.current || !mapLoaded) return;
 
@@ -216,18 +201,16 @@ function Explore({ onBackToHome }: ExploreProps) {
         !isNaN(toCoords.lat) &&
         !isNaN(toCoords.lng)
       ) {
-        // Calculate bounds to include both locations
+    
         const bounds = new window.mapboxgl.LngLatBounds();
         bounds.extend([fromCoords.lng, fromCoords.lat]);
         bounds.extend([toCoords.lng, toCoords.lat]);
 
-        // Fit map to bounds with padding
         map.current.fitBounds(bounds, {
           padding: 100,
           maxZoom: 6,
         });
       } else if (toCoords && !isNaN(toCoords.lat) && !isNaN(toCoords.lng)) {
-        // Center on destination
         map.current.flyTo({
           center: [toCoords.lng, toCoords.lat],
           zoom: 6,
@@ -239,7 +222,6 @@ function Explore({ onBackToHome }: ExploreProps) {
     }
   };
 
-  // Add FROM and TO markers with connecting line
   const addRouteMarkers = () => {
     if (!map.current || !mapLoaded || !fromLocation || !toLocation) return;
 
@@ -252,7 +234,7 @@ function Explore({ onBackToHome }: ExploreProps) {
         return;
       }
 
-      // Create FROM marker (green)
+      
       const fromMarkerElement = document.createElement("div");
       fromMarkerElement.innerHTML = `
         <div style="
@@ -275,7 +257,7 @@ function Explore({ onBackToHome }: ExploreProps) {
         .setLngLat([fromCoords.lng, fromCoords.lat])
         .addTo(map.current);
 
-      // Create TO marker (red)
+    
       const toMarkerElement = document.createElement("div");
       toMarkerElement.innerHTML = `
         <div style="
@@ -298,7 +280,7 @@ function Explore({ onBackToHome }: ExploreProps) {
         .setLngLat([toCoords.lng, toCoords.lat])
         .addTo(map.current);
 
-      // Add route line
+    
       if (map.current.getSource("route")) {
         map.current.removeLayer("route");
         map.current.removeSource("route");
@@ -334,30 +316,30 @@ function Explore({ onBackToHome }: ExploreProps) {
         },
       });
 
-      // Store markers for cleanup
+      
       setCurrentMarkers((prev) => [...prev, fromMarker, toMarker]);
     } catch (error) {
       console.error("Error adding route markers:", error);
     }
   };
 
-  // Clear existing markers and route line
+  
   const clearMarkers = () => {
     currentMarkers.forEach((marker) => marker.remove());
     setCurrentMarkers([]);
 
-    // Remove route line if it exists
+  
     if (map.current && map.current.getSource("route")) {
       try {
         map.current.removeLayer("route");
         map.current.removeSource("route");
       } catch (error) {
-        // Layer might not exist, ignore error
+        
       }
     }
   };
 
-  // Add markers based on search results
+  
   const addSearchResultMarkers = () => {
     if (
       !map.current ||
@@ -370,15 +352,15 @@ function Explore({ onBackToHome }: ExploreProps) {
     clearMarkers();
     const newMarkers: any[] = [];
 
-    // Default fallback coordinates (Paris)
+  
     const defaultCoords = { lat: 48.8566, lng: 2.3522 };
 
-    // Update destinations based on search results
+
     const newDestinations = searchResults.data.outbound.map((flight, index) => {
       const destinationName = flight.destination || toLocation;
       const destinationCoords = getLocationCoordinates(destinationName);
 
-      // Ensure we always have valid coordinates
+    
       let finalCoords = defaultCoords;
 
       if (
@@ -409,7 +391,7 @@ function Explore({ onBackToHome }: ExploreProps) {
 
     setDestinations(newDestinations);
 
-    // Add markers for each flight result
+
     newDestinations.forEach((destination) => {
       // Double-check coordinates before creating marker
       if (isNaN(destination.lat) || isNaN(destination.lng)) {
@@ -449,13 +431,13 @@ function Explore({ onBackToHome }: ExploreProps) {
 
     setCurrentMarkers(newMarkers);
     updateMapView();
-    addRouteMarkers(); // Call this after search results are processed
+    addRouteMarkers(); 
   };
 
   useEffect(() => {
     if (!mapContainer.current || map.current) return;
 
-    // Load Mapbox GL JS
+    
     const script = document.createElement("script");
     script.src = "https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js";
     script.onload = initializeMap;
@@ -479,13 +461,12 @@ function Explore({ onBackToHome }: ExploreProps) {
         addSearchResultMarkers();
       } catch (error) {
         console.error("Error adding search result markers:", error);
-        // Clear any partial markers that might have been added
         clearMarkers();
       }
     }
   }, [mapLoaded, searchResults]);
 
-  // Update route markers when locations change
+  
   useEffect(() => {
     if (mapLoaded && fromLocation && toLocation) {
       addRouteMarkers();
@@ -500,7 +481,7 @@ function Explore({ onBackToHome }: ExploreProps) {
     map.current = new window.mapboxgl.Map({
       container: mapContainer.current,
       style: "mapbox://styles/mapbox/light-v11",
-      center: [2.3522, 48.8566], // Paris as center
+      center: [2.3522, 48.8566], 
       zoom: 4,
       attributionControl: false,
     });
@@ -508,7 +489,7 @@ function Explore({ onBackToHome }: ExploreProps) {
     map.current.on("load", () => {
       setMapLoaded(true);
       addDestinationMarkers();
-      addRouteMarkers(); // Add route markers when map loads
+      addRouteMarkers(); 
     });
   };
 
@@ -535,7 +516,7 @@ function Explore({ onBackToHome }: ExploreProps) {
   };
 
   const handleDestinationClick = (destination: any) => {
-    console.log("Selected destination:", destination);
+
     setToLocation(destination.name);
   };
 
@@ -545,7 +526,7 @@ function Explore({ onBackToHome }: ExploreProps) {
       return;
     }
 
-    setLoading(true);
+    // setLoading(true);
     setSearchResults(null);
 
     const searchParams: FlightSearchParams = {
@@ -562,118 +543,33 @@ function Explore({ onBackToHome }: ExploreProps) {
     };
 
     try {
-      console.log("Searching flights with params:", searchParams);
       const response = await flightAPI.searchFlights(searchParams);
-      console.log("Flight search response:", response);
 
       setSearchResults(response);
 
       if (response.success && response.data) {
-        console.log(
-          `Found ${response.data.totalResults} flights from ${fromLocation} to ${toLocation}`
-        );
+
       } else {
         console.error("Search failed:", response.error);
-        // Still set the response so UI can show error message
+        
       }
     } catch (error) {
       console.error("Search error:", error);
       setSearchResults({
         success: false,
         error: "Failed to search flights. Please try again.",
-        data: null,
+        data: undefined,
       });
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
-  const swapLocations = () => {
-    const temp = fromLocation;
-    setFromLocation(toLocation);
-    setToLocation(temp);
-  };
 
-  const renderFlightResults = () => {
-    if (!searchResults) return null;
-
-    if (loading) {
-      return (
-        <div className="results-loading">
-          <FontAwesomeIcon icon={faMagnifyingGlass} spin />
-          <p>Searching for flights...</p>
-        </div>
-      );
-    }
-
-    if (!searchResults.success) {
-      return (
-        <div className="results-error">
-          <p>Error: {searchResults.error}</p>
-          <button onClick={handleSearch} className="retry-btn">
-            Try Again
-          </button>
-        </div>
-      );
-    }
-
-    if (
-      !searchResults.data?.outbound ||
-      searchResults.data.outbound.length === 0
-    ) {
-      return (
-        <div className="results-empty">
-          <p>No flights found for your search.</p>
-        </div>
-      );
-    }
-
-    return (
-      <div className="results-container">
-        <div className="results-header">
-          <div className="results-count">
-            <p>About these results</p>
-          </div>
-        </div>
-
-        <div className="flight-results">
-          {searchResults.data.outbound.map((flight) => (
-            <div key={flight.id} className="flight-card">
-              <div className="flight-image">
-                <img
-                  src={`https://images.unsplash.com/photo-1551632811-561732d1e306?w=150&h=100&fit=crop&crop=center`}
-                  alt={flight.destination || toLocation}
-                />
-              </div>
-
-              <div className="flight-info">
-                <h3 className="destination-name">
-                  {flight.destination || toLocation}
-                </h3>
-                <div className="flight-details">
-                  <FontAwesomeIcon icon={faPlane} className="flight-icon" />
-                  <span className="flight-type">
-                    {flight.stops === 0
-                      ? "Nonstop"
-                      : `${flight.stops} stop${flight.stops > 1 ? "s" : ""}`}
-                  </span>
-                  <span className="flight-duration">{flight.duration}</span>
-                </div>
-              </div>
-
-              <div className="flight-price">
-                <span className="price">${flight.price.amount}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  };
 
   const totalPassengers = passengers;
 
-  // Calendar logic (mirroring Form.tsx)
+  
   function handleCalendarOpen(type: "depart" | "return") {
     setShowCalendar(type);
     setTempDepartDate(departDate);
@@ -696,7 +592,7 @@ function Explore({ onBackToHome }: ExploreProps) {
   }
 
   function handleDateClick(date: Date) {
-    // Use timezone-safe date formatting (YYYY-MM-DD)
+    
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
@@ -753,7 +649,6 @@ function Explore({ onBackToHome }: ExploreProps) {
         <div className="calendar-days">
           {days.map((day, index) => {
             const isCurrentMonth = day.getMonth() === month.getMonth();
-            // Use timezone-safe date formatting (YYYY-MM-DD)
             const year = day.getFullYear();
             const monthNum = String(day.getMonth() + 1).padStart(2, "0");
             const dayNum = String(day.getDate()).padStart(2, "0");
@@ -769,7 +664,6 @@ function Explore({ onBackToHome }: ExploreProps) {
             const isPast = day < new Date();
             const isDisabled = !isCurrentMonth || isPast;
 
-            // Get today's date in same format
             const today = new Date();
             const todayYear = today.getFullYear();
             const todayMonthNum = String(today.getMonth() + 1).padStart(2, "0");
@@ -824,15 +718,6 @@ function Explore({ onBackToHome }: ExploreProps) {
     }
   }
 
-  function formatDate(dateStr: string) {
-    if (!dateStr) return "";
-    const date = new Date(dateStr);
-    return date.toLocaleDateString("en-US", {
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-    });
-  }
 
   function handlePassengerDropdownOpen() {
     setTempAdults(passengers);
@@ -851,29 +736,28 @@ function Explore({ onBackToHome }: ExploreProps) {
   function updateTempPassengerCount(type: string, operation: string) {
     switch (type) {
       case "adults":
-        if (operation === "increase") setTempAdults((prev) => prev + 1);
+        if (operation === "increase") setTempAdults((prev: number) => prev + 1);
         else if (operation === "decrease" && tempAdults > 1)
-          setTempAdults((prev) => prev - 1);
+          setTempAdults((prev: number) => prev - 1);
         break;
       case "children":
-        if (operation === "increase") setTempChildren((prev) => prev + 1);
+        if (operation === "increase") setTempChildren((prev: number) => prev + 1);
         else if (operation === "decrease" && tempChildren > 0)
-          setTempChildren((prev) => prev - 1);
+          setTempChildren((prev: number) => prev - 1);
         break;
       case "infantsInSeat":
-        if (operation === "increase") setTempInfantsInSeat((prev) => prev + 1);
+        if (operation === "increase") setTempInfantsInSeat((prev: number) => prev + 1);
         else if (operation === "decrease" && tempInfantsInSeat > 0)
-          setTempInfantsInSeat((prev) => prev - 1);
+          setTempInfantsInSeat((prev: number) => prev - 1);
         break;
       case "infantsOnLap":
-        if (operation === "increase") setTempInfantsOnLap((prev) => prev + 1);
+        if (operation === "increase") setTempInfantsOnLap((prev: number) => prev + 1);
         else if (operation === "decrease" && tempInfantsOnLap > 0)
           setTempInfantsOnLap((prev) => prev - 1);
         break;
     }
   }
 
-  // Scroll filter bar left/right
   const scrollFilterBar = (direction: "left" | "right") => {
     const bar = filterBarRef.current;
     if (!bar) return;
@@ -885,7 +769,7 @@ function Explore({ onBackToHome }: ExploreProps) {
     }
   };
 
-  // Static mapping for city coordinates
+
   const cityCoords: Record<string, [number, number]> = {
     Mumbai: [72.8777, 19.076],
     Singapore: [103.8198, 1.3521],
@@ -896,10 +780,8 @@ function Explore({ onBackToHome }: ExploreProps) {
     Delhi: [77.1025, 28.7041],
     "San Francisco": [-122.4194, 37.7749],
     Mauritius: [57.5522, -20.3484],
-    // ... add more as needed
   };
 
-  // Airline logo mapping
   const airlineLogos: Record<string, string> = {
     IndiGo:
       "https://upload.wikimedia.org/wikipedia/commons/7/7b/IndiGo_Logo.svg",
@@ -907,15 +789,14 @@ function Explore({ onBackToHome }: ExploreProps) {
       "https://upload.wikimedia.org/wikipedia/commons/2/2d/Air_India_Logo.svg",
     Vistara:
       "https://upload.wikimedia.org/wikipedia/commons/2/2d/Vistara_logo.svg",
-    // ... add more as needed
+  
   };
   const defaultAirlineLogo =
     "https://upload.wikimedia.org/wikipedia/commons/7/7b/IndiGo_Logo.svg";
 
-  // Add markers and line when both locations are filled and map is loaded
+
   useEffect(() => {
     if (!map.current || !mapLoaded) return;
-    // Remove previous markers and line
     if (map.current._fromMarker) {
       map.current._fromMarker.remove();
       map.current._fromMarker = null;
@@ -931,17 +812,17 @@ function Explore({ onBackToHome }: ExploreProps) {
     const fromCoord = cityCoords[fromLocation];
     const toCoord = cityCoords[toLocation];
     if (fromCoord && toCoord) {
-      // Add from marker
+
       const fromMarker = new window.mapboxgl.Marker({ color: "#1a73e8" })
         .setLngLat(fromCoord)
         .addTo(map.current);
       map.current._fromMarker = fromMarker;
-      // Add to marker
+  
       const toMarker = new window.mapboxgl.Marker({ color: "#34a853" })
         .setLngLat(toCoord)
         .addTo(map.current);
       map.current._toMarker = toMarker;
-      // Add line
+    
       map.current.addSource("route-line", {
         type: "geojson",
         data: {
@@ -969,13 +850,13 @@ function Explore({ onBackToHome }: ExploreProps) {
     }
   }, [fromLocation, toLocation, mapLoaded]);
 
-  // Helper: Format date range for header
+
   function formatDateRange(depart: string, ret: string) {
     if (!depart || !ret) return "";
     return `${depart} – ${ret}`;
   }
 
-  // Helper: Get random image for destination, fallback to default
+
   function getDestinationImage(dest: string) {
     if (!dest)
       return "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80";
@@ -986,9 +867,9 @@ function Explore({ onBackToHome }: ExploreProps) {
   const defaultPlaceImage =
     "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80";
 
-  // Helper: Get country for destination (demo, fallback to empty)
+
   function getCountry(dest: string) {
-    // In real app, use a mapping or API
+  
     const map: Record<string, string> = {
       Singapore: "Singapore",
       Paris: "France",
@@ -999,14 +880,12 @@ function Explore({ onBackToHome }: ExploreProps) {
       Delhi: "India",
       "San Francisco": "USA",
       Mauritius: "Mauritius",
-      // ... add more as needed
     };
     return map[dest] || "";
   }
 
   const [imgError, setImgError] = useState(false);
 
-  // New: Render flight results in card layout like Google Flights
   function renderFlightResultsCard() {
     if (
       !searchResults ||
@@ -1043,7 +922,7 @@ function Explore({ onBackToHome }: ExploreProps) {
         </div>
         <div className="explore-flight-card-list">
           {searchResults.data.outbound.map((flight, idx) => {
-            // Airline logo logic
+      
             const airlineName = flight.airline || "IndiGo";
             const airlineLogo = airlineLogos[airlineName] || defaultAirlineLogo;
             return (
