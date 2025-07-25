@@ -1,5 +1,7 @@
 import "./Navbar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import googleLogo from "../assets/google_logo.png";
+import appsIcon from "../assets/apps.svg";
 import {
   faMoon,
   faBars,
@@ -51,7 +53,7 @@ function Navbar() {
               style={{ cursor: "pointer" }}
             >
               <img
-                src={"src/assets/google_logo.webp"}
+                src={googleLogo}
                 alt="google_logo"
                 style={{ height: 24, width: 74 }}
               />
@@ -92,7 +94,7 @@ function Navbar() {
 
           <div className="navbar-right">
             <FontAwesomeIcon icon={faMoon} className="mode-icon-item" />
-            <img src={"src/assets/apps.svg"} className="apps-icon" />
+            <img src={appsIcon} className="apps-icon" />
             <button className="signin">Sign In</button>
           </div>
         </div>
