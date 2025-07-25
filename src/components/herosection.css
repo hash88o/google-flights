@@ -1,0 +1,32 @@
+.hero-section {
+  width: 100vw;
+  min-height: 160px;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+}
+
+.hero-img {
+  width: 100vw;
+  min-height: 160px;
+  height: auto;
+  object-fit: cover;
+  display: block;
+}
+
+.hero-title {
+  font-size: 7vw;
+  min-font-size: 28px;
+  max-font-size: 56px;
+  text-align: center;
+  width: 100vw;
+  margin: 0 auto;
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 9vw;
+  }
+}

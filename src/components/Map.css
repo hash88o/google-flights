@@ -1,0 +1,410 @@
+/* map */
+.map-title {
+  font-size: 20px;
+  font-family: "Google Sans", sans-serif;
+  font-weight: 500;
+  letter-spacing: 0px;
+  line-height: 24px;
+  color: #202124;
+  margin-bottom: 20px;
+}
+
+.container-main {
+  margin-top: 50px;
+  margin-left: 130px;
+  margin-right: 130px;
+}
+
+.exclamation-icon {
+  color: #6b7280;
+  margin-left: 8px;
+}
+
+.top-places {
+  margin-bottom: 20px;
+}
+
+.top-places ul {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 20px;
+}
+
+.top-places li {
+  padding: 8px 16px;
+  border-radius: 20px;
+  background-color: #f8f9fa;
+  color: #3c4043;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.top-places li:hover {
+  background-color: #e8f0fe;
+  color: #1a73e8;
+}
+
+/* map wrapper */
+.map-wrapper {
+  position: relative;
+  width: 992px;
+  height: 300px;
+  margin-bottom: 40px;
+}
+
+/* map container */
+.map-container {
+  width: 992px;
+  height: 300px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: filter 0.3s ease;
+  position: relative;
+  background-color: #f1f3f4;
+}
+
+.map-container.map-darkened {
+  filter: brightness(0.7);
+}
+
+/*  map interface */
+.simple-map {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background-image: url("../assets/map.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+
+/* markers */
+.location-marker {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+}
+
+.user-location {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.marker-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #ea4335;
+  border: 3px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  animation: pulse 2s infinite;
+}
+
+.marker-dot.destination {
+  width: 12px;
+  height: 12px;
+  background-color: #1a73e8;
+  border: 2px solid #ffffff;
+  animation: none;
+}
+
+.marker-label {
+  background-color: white;
+  color: #202124;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: "Google Sans", sans-serif;
+  margin-top: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), 0 0 0 0 rgba(234, 67, 53, 0.4);
+  }
+  70% {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), 0 0 0 10px rgba(234, 67, 53, 0);
+  }
+  100% {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), 0 0 0 0 rgba(234, 67, 53, 0);
+  }
+}
+
+/*  destinations btn */
+.explore-destinations-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  color: #1a73e8;
+  border: 1px solid #dadce0;
+  border-radius: 6px;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: "Google Sans", sans-serif;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+  z-index: 1000;
+}
+
+.explore-destinations-btn:hover {
+  background-color: #f8f9fa;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* city cards  */
+.city-container {
+  display: flex !important;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 16px;
+  width: 992px;
+  margin-top: 20px;
+}
+
+.city-card {
+  flex: 1 1 auto;
+  min-width: 0;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.city-card-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 140px;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.city-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  border-radius: 8px;
+}
+
+.city-card-content {
+  padding: 0;
+}
+
+.city-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.city-name {
+  font-family: "Google Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #202124;
+  margin: 0;
+  line-height: 20px;
+}
+
+.city-price {
+  font-family: "Google Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #202124;
+  margin: 0;
+}
+
+.city-dates {
+  font-family: "Google Sans", sans-serif;
+  font-size: 14px;
+  color: #5f6368;
+  margin: 0 0 4px 0;
+  line-height: 18px;
+}
+
+.city-flight-info {
+  font-family: "Google Sans", sans-serif;
+  font-size: 13px;
+  color: #5f6368;
+  margin: 0;
+  line-height: 16px;
+}
+
+/* responsive */
+@media (max-width: 1024px) {
+  .container-main {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  .map-wrapper {
+    width: 100%;
+    max-width: 992px;
+  }
+
+  .map-container {
+    width: 100%;
+    height: 300px;
+  }
+
+  .city-container {
+    width: 100%;
+    max-width: 992px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .city-card {
+    flex: 1;
+    min-width: calc(50% - 6px);
+  }
+
+  .top-places ul {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .marker-label {
+    font-size: 11px;
+    padding: 3px 6px;
+  }
+}
+
+@media (max-width: 768px) {
+  .city-container {
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 100vw;
+  }
+  .city-card {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center;
+    justify-content: space-between;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+    min-height: auto;
+    margin-bottom: 12px;
+    width: 100%;
+  }
+  .city-card-image-wrapper {
+    order: 1;
+    flex: 0 0 90px;
+    height: 68px;
+    margin: 0 12px 0 0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .city-card-image {
+    width: 90px;
+    height: 68px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  .city-card-content {
+    order: 2;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    padding: 0;
+    margin-right: auto;
+  }
+  .city-header {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 0;
+  }
+  .city-name {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #202124;
+    margin: 0 0 2px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .city-dates {
+    font-size: 0.9rem;
+    color: #5f6368;
+    margin: 0 0 2px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .city-flight-info {
+    font-size: 0.85rem;
+    color: #5f6368;
+    margin: 0;
+  }
+  .city-price {
+    order: 3;
+    flex: 0 0 auto;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #202124;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    text-align: right;
+    padding: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .city-card-image-wrapper {
+    flex: 0 0 85px;
+    height: 64px;
+  }
+  .city-card-image {
+    width: 85px;
+    height: 64px;
+  }
+}
+
+@media (max-width: 480px) {
+  .city-card-image-wrapper {
+    flex: 0 0 80px;
+    height: 60px;
+    margin-right: 10px;
+  }
+  .city-card-image {
+    width: 80px;
+    height: 60px;
+  }
+  .city-name {
+    font-size: 0.95rem;
+  }
+  .city-dates {
+    font-size: 0.85rem;
+  }
+  .city-flight-info {
+    font-size: 0.8rem;
+  }
+  .city-price {
+    font-size: 0.95rem;
+  }
+}
