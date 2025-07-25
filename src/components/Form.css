@@ -97,6 +97,27 @@
   margin-top: 4px;
 }
 
+/* Mobile responsive positioning for passenger dropdown */
+@media (max-width: 768px) {
+  .passenger-dropdown {
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 280px;
+    max-width: 90vw;
+    width: max-content;
+  }
+}
+
+@media (max-width: 480px) {
+  .passenger-dropdown {
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 260px;
+    max-width: 85vw;
+    width: max-content;
+  }
+}
+
 .passenger-row {
   display: flex;
   justify-content: space-between;

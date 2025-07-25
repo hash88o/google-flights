@@ -896,6 +896,31 @@
   overflow-y: auto;
 }
 
+/* Mobile responsive positioning for explore passenger dropdown */
+@media (max-width: 768px) {
+  .explore-passenger-dropdown {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    margin: 0;
+    min-width: 260px;
+    max-width: 90vw;
+    width: max-content;
+  }
+}
+
+@media (max-width: 480px) {
+  .explore-passenger-dropdown {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    margin: 0;
+    min-width: 240px;
+    max-width: 85vw;
+    width: max-content;
+  }
+}
+
 .explore-passenger-row {
   display: flex;
   justify-content: space-between;
